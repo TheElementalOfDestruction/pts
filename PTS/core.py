@@ -25,6 +25,30 @@ REF_IMG = PIL.Image.new('RGB', (1, 1), (0, 0, 0))
 REF_DRAW = PIL.ImageDraw.ImageDraw(REF_IMG)
 
 
+def attemptFit(text, words, width, height, font, size):
+    currentAttempt = ''
+    failed = False
+    totalsize = font.getsize(text)
+    if totalsize[0] <= width and totalsize[1] <= height: # This text will already fit into the area.
+        return (text, font, size)
+    elif totalsize[1] > height: # This font size is already too big.
+        return False
+    # Create a list of words and whether or not we should split them.
+    splitWords = [(word, font.getsize(word)[0] > width) for word in words]
+    for word in splitWords:
+        if REF_DRAW.textsize(currentAttempt + ' ' + word[0], font)[0] > width: # If the current word will overflow the line, we need to try a few things.
+            if word[1]: # Can it be split?
+                currentAttempt += '\n' if REF_DRAW.textsize(currentAttempt + ' ', font)[0] > width else ' '
+                for character in word[0]:
+                    currentAttempt += ('\n' + character) if REF_DRAW.textsize(currentAttempt + character, font)[0] > width else character
+            else:
+                currentAttempt += '\n' + word[0]
+        else:
+            currentAttempt += (' ' if (len(currentAttempt) > 0 and currentAttempt[-1] != '\n') else '') + word[0]
+        if REF_DRAW.textsize(currentAttempt, font)[1] > height: # If the current attempt is two tall, we have failed.
+            return False
+    return (currentAttempt, font, size)
+
 def loadTTF(name, path, encoding = ''):
     """
     Loads the font from the specified path and stores it with the specified name.
@@ -51,33 +75,11 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None):
     words = text.split(' ')
 
     for size in SIZES:
-        currentAttempt = ''
-        failed = False
-        font = FONTS[fontName][size]
         if size < minSize:
             return None
-        totalsize = font.getsize(text)
-        if totalsize[0] <= width and totalsize[1] <= height: # This text will already fit into the area.
-            return (text, font, size)
-        elif totalsize[1] > height: # This font size is already too big.
-            continue # Go back to the start of the loop.
-        # Create a list of words and whether or not we should split them.
-        splitWords = [(word, font.getsize(word)[0] > width) for word in words]
-        for word in splitWords:
-            if REF_DRAW.textsize(currentAttempt + ' ' + word[0], font)[0] > width: # If the current word will overflow the line, we need to try a few things.
-                if word[1]: # Can it be split?
-                    currentAttempt += '\n' if REF_DRAW.textsize(currentAttempt + ' ', font)[0] > width else ' '
-                    for character in word[0]:
-                        currentAttempt += ('\n' + character) if REF_DRAW.textsize(currentAttempt + character, font)[0] > width else character
-                else:
-                    currentAttempt += '\n' + word[0]
-            else:
-                currentAttempt += (' ' if (len(currentAttempt) > 0 and currentAttempt[-1] != '\n') else '') + word[0]
-            if REF_DRAW.textsize(currentAttempt, font)[1] > height: # If the current attempt is two tall, we have failed.
-                failed = True
-                break
-        if not failed:
-            return (currentAttempt, font, size)
+        result = attemptFit(text, words, width, height, FONTS[fontName][size], size)
+        if result:
+            return result
 
     return None
 
