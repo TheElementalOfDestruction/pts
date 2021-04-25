@@ -1,0 +1,3 @@
+
+# First level requirements
+pillow>=5.4.1

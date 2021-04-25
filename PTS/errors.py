@@ -1,0 +1,2 @@
+class FontError(KeyError):
+    pass
