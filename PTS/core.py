@@ -22,6 +22,8 @@ SIZES = (
     15,
 )
 
+MIN_SIZE = 15
+
 REF_IMG = PIL.Image.new('RGB', (1, 1), (0, 0, 0))
 REF_DRAW = PIL.ImageDraw.ImageDraw(REF_IMG)
 
