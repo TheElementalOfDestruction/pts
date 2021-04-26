@@ -64,7 +64,7 @@ def loadTTF(name, path, encoding = '', fast = False):
         FONTS[name.lower()]['encoding'] = ''
         FONTS[name.lower()]['fast'] = fast
         if fast:
-            createFastFont(FONTS[size] for size in SIZES)
+            createFastFont(FONTS[name.lower()][size] for size in SIZES)
 
 def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = False):
     """
