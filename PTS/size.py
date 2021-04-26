@@ -3,18 +3,18 @@ FAST_FONTS = {}
 def createFastFont(fonts):
     for font in fonts:
         if font not in FAST_FONTS:
-            FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(0x10000)}
+            FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(256)}
 
 def getSizeFast(text, font):
     if font in FAST_FONTS:
         ffont = FAST_FONTS[font]
-        lines = tuple(getSizeLine(line, ffont) for line in text.split('\n'))
+        lines = tuple(getSizeLine(line, font, ffont) for line in text.split('\n'))
         return (max(line[0] for line in lines), sum(line[1] for line in lines) + (4 * len(lines)))
     else:
         return getSizeSlow(text, font)
 
-def getSizeLine(line, fastFont):
-    return sumSizes(fastFont[char] for char in line)
+def getSizeLine(line, font, fastFont):
+    return sumSizes(fastFont[char] if char in fastFont else font.getsize_multiline(char) for char in line)
 
 def getSizeSlow(text, font):
     return font.getsize_multiline(text)
