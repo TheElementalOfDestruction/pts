@@ -8,7 +8,7 @@ def createFastFont(fonts):
 def getSizeFast(text, font):
     if font in FAST_FONTS:
         ffont = FAST_FONTS[font]
-        lines = (getSizeLine(line, ffont) for line in text.split('\n'))
+        lines = tuple(getSizeLine(line, ffont) for line in text.split('\n'))
         return (max(line[0] for line in lines), sum(line[1] for line in lines) + (4 * len(lines)))
     else:
         return getSizeSlow(text, font)
