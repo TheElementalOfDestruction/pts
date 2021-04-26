@@ -1,3 +1,7 @@
+**v1.2.0**
+* Added new options to some commands for the capability to use fast fonts, a slightly less accurate calculation method that is much faster than the more accurate version.
+* Added .gitignore
+
 **v1.1.1**
 * Fixed bug caused by `MIN_SIZE` accidentally being deleted.
 

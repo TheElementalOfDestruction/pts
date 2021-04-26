@@ -6,7 +6,7 @@ Usage
 _____
 Loading a Font
 --------------
-To use a font with this module, it first needs to be loaded. The function ``loadTTF`` is used to load a True Type Font file. It takes 3 parameters: the name to be used for the font, the path of the font, and the encoding, if necessary.
+To use a font with this module, it first needs to be loaded. The function ``loadTTF`` is used to load a True Type Font file. It takes 4 arguments: the name to be used for the font, the path of the font, an optional encoding, and an option to load the fast version of the font.
 
 .. code:: python
 
@@ -16,7 +16,7 @@ To use a font with this module, it first needs to be loaded. The function ``load
 
 Scaling Text
 ------------
-To figure out if a string of text will fit in an area with the current settings, all you need to do is use the main function of the module: ``fitText``. The function takes 5 arguments: the text to be fit, the width of the area in pixels, the height of the area in pixels, an optional font name (defaults to "consolas"), and an optional minimum size to use (use None to try all available sizes). The function returns a tuple of the wrapped text, the font that worked, and the size of said font, in that order.
+To figure out if a string of text will fit in an area with the current settings, all you need to do is use the main function of the module: ``fitText``. The function takes 5 arguments: the text to be fit, the width of the area in pixels, the height of the area in pixels, an optional font name (defaults to "consolas"), an optional minimum size to use (use None to try all available sizes), and an option to use fast fonts, when available. The function returns a tuple of the wrapped text, the font that worked, and the size of said font, in that order.
 
 .. code:: python
 
@@ -25,7 +25,7 @@ To figure out if a string of text will fit in an area with the current settings,
     text = "This is a string of text to be fit."
 
     PTS.loadTTF('arial', 'arial.ttf') # Load the font
-    result = PTS.fitText(text, 100, 500, 'arial', 23)
+    result = PTS.fitText(text, 100, 500, 'arial', 23, fast = True)
 
 
 Changing the Minimum and Maximum Text Sizes
@@ -41,3 +41,7 @@ If you would like to change the minimum and maximum text sizes (as well as the d
     step = 2
 
     PTS.setSizes(30, 60, 2)
+
+Fast Fonts
+----------
+Fast fonts are a more memory intensive way to process the line data. They are slightly less accurate, but are orders of magnitude faster than the default font type.
