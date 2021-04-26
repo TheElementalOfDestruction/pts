@@ -23,5 +23,5 @@ def sumSizes(sizes):
     """
     Takes in an iterable of sizes and returns the sums of each for a line.
     """
-    args = tuple(args)
-    return (sum(x[0] for x in args), max(x[1] for x in args))
+    sizes = tuple(sizes)
+    return (sum(x[0] for x in sizes), max(x[1] for x in sizes))
