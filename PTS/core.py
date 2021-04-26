@@ -1,3 +1,6 @@
+import collections
+import threading
+
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
@@ -18,8 +21,6 @@ SIZES = (
     17,
     15,
 )
-
-MIN_SIZE = 15
 
 REF_IMG = PIL.Image.new('RGB', (1, 1), (0, 0, 0))
 REF_DRAW = PIL.ImageDraw.ImageDraw(REF_IMG)
@@ -74,14 +75,32 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None):
 
     words = text.split(' ')
 
-    for size in SIZES:
-        if size < minSize:
-            return None
-        result = attemptFit(text, words, width, height, FONTS[fontName][size], size)
-        if result:
-            return result
+    ret = collections.deque()
+    def attemptFitRet(text, words, width, height, font, size, ret):
+        ret.append(attemptFit(text, words, width, height, font, size))
 
-    return None
+    threads = tuple(threading.Thread(target = attemptFitRet, args = (text, words, width, height, FONTS[fontName][size], size, ret), daemon = True) for size in SIZES if size >= minSize)
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    largest = (None, None, 0)
+    for result in ret:
+        if result:
+            if result[2] > largest[2]:
+                largest = result
+    return None if largest[0] is None else largest
+
+    # for size in SIZES:
+    #     if size < minSize:
+    #         return None
+    #     result = attemptFit(text, words, width, height, FONTS[fontName][size], size)
+    #     if result:
+    #         return result
+    #
+    # return None
 
 def setSizes(min, max, step):
     """
@@ -90,6 +109,7 @@ def setSizes(min, max, step):
     :param max:  Maximim text size to use (exclusive).
     :param step: The step between sizes.
     """
+    global MIN_SIZE, SIZES
     # Change the SIZES constant.
     SIZES = tuple(reversed(range(min, max, int(abs(step)))))
     MIN_SIZE = min
