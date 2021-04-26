@@ -29,7 +29,7 @@ REF_IMG = PIL.Image.new('RGB', (1, 1), (0, 0, 0))
 REF_DRAW = PIL.ImageDraw.ImageDraw(REF_IMG)
 
 
-def attemptFit(text, words, width, height, font, size):
+def attemptFit(text, words, width, height, font, size, fast):
     textsize = getSizeFast if fast else getSizeSlow
     currentAttempt = ''
     failed = False

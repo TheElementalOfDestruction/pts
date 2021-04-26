@@ -44,4 +44,4 @@ If you would like to change the minimum and maximum text sizes (as well as the d
 
 Fast Fonts
 ----------
-Fast fonts are a more memory intensive way to process the line data. They are slightly less accurate, but are orders of magnitude faster than the default font type.
+Fast fonts are a way to process the text data much faster. The downsides are that they are memory intensive, taking a lot longer to load, and are slightly less accurate.
