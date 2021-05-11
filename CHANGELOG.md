@@ -1,3 +1,6 @@
+**v1.2.1**
+* Added new function `listFonts` that returns a list of registered fonts.
+
 **v1.2.0**
 * Added new options to some commands for the capability to use fast fonts, a slightly less accurate calculation method that is much faster than the more accurate version.
 * Added .gitignore
