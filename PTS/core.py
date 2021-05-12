@@ -8,7 +8,7 @@ import PIL.ImageFont
 from PTS.errors import FontError
 from PTS.size import FAST_FONTS, createFastFont, getSizeFast, getSizeSlow
 
-
+REGISTERED = []
 FONTS = {}
 SIZES = (
     33,
@@ -55,13 +55,14 @@ def attemptFit(text, words, width, height, font, size, fast):
     return (currentAttempt, font, size)
 
 def listFonts():
-    return tuple(x for x in FONTS)
+    return tuple(x for x in REGISTERED)
 
 def loadTTF(name, path, encoding = '', fast = False):
     """
     Loads the font from the specified path and stores it with the specified name.
     """
     if name.lower() not in FONTS:
+        REGISTERED.append(name)
         FONTS[name.lower()] = {size: PIL.ImageFont.truetype(path, size, encoding = encoding) for size in SIZES}
         FONTS[name.lower()]['path'] = path
         FONTS[name.lower()]['encoding'] = ''

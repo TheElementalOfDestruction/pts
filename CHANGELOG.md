@@ -1,3 +1,6 @@
+**v1.2.2**
+* Made adjustment to the core to allow fonts to keep their case when returned from `listFonts`.
+
 **v1.2.1**
 * Added new function `listFonts` that returns a list of registered fonts.
 
