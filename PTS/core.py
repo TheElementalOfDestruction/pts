@@ -80,9 +80,10 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = F
     :param fast: Tells it whether to use a faster (but slightly less accurate)
                  algorithm to determine the text size.
     """
+    if fontName.lower() not in FONTS:
+        raise FontError(fontName)
+
     fontName = fontName.lower()
-    if fontName not in FONTS:
-        raise FontError('Could not find the specified font (Did you load it and use the right name?)')
 
     if minSize is None:
         minSize = MIN_SIZE

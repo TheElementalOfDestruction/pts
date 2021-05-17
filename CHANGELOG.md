@@ -1,3 +1,6 @@
+**v1.2.3**
+* Changed the way `FontError` works so that you can now access the font that caused the error. Access is done through `FontError.font`.
+
 **v1.2.2**
 * Made adjustment to the core to allow fonts to keep their case when returned from `listFonts`.
 
