@@ -1,3 +1,6 @@
+**v1.3.0**
+* Added new option `preferUnwrapped` to `fitText`. If this is enabled then the function will try to find a size of the font where it does not wrap the text mid-word. Will return the standard if it cannot find any sizes that do not do this.
+
 **v1.2.3**
 * Changed the way `FontError` works so that you can now access the font that caused the error. Access is done through `FontError.font`.
 

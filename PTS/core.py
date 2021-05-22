@@ -33,9 +33,10 @@ def attemptFit(text, words, width, height, font, size, fast):
     textsize = getSizeFast if fast else getSizeSlow
     currentAttempt = ''
     failed = False
+    wrapped = False
     totalsize = textsize(text, font)
     if totalsize[0] <= width and totalsize[1] <= height: # This text will already fit into the area.
-        return (text, font, size)
+        return (text, font, size, wrapped)
     elif totalsize[1] > height: # This font size is already too big.
         return False
     # Create a list of words and whether or not we should split them.
@@ -43,6 +44,7 @@ def attemptFit(text, words, width, height, font, size, fast):
     for word in splitWords:
         if textsize(currentAttempt + ' ' + word[0], font)[0] > width: # If the current word will overflow the line, we need to try a few things.
             if word[1]: # Can it be split?
+                wrapped = True
                 currentAttempt += '\n' if textsize(currentAttempt + ' ', font)[0] > width else ' '
                 for character in word[0]:
                     currentAttempt += ('\n' + character) if textsize(currentAttempt + character, font)[0] > width else character
@@ -52,7 +54,7 @@ def attemptFit(text, words, width, height, font, size, fast):
             currentAttempt += (' ' if (len(currentAttempt) > 0 and currentAttempt[-1] != '\n') else '') + word[0]
         if textsize(currentAttempt, font)[1] > height: # If the current attempt is two tall, we have failed.
             return False
-    return (currentAttempt, font, size)
+    return (currentAttempt, font, size, wrapped)
 
 def listFonts():
     return tuple(x for x in REGISTERED)
@@ -70,15 +72,17 @@ def loadTTF(name, path, encoding = '', fast = False):
         if fast:
             createFastFont(FONTS[name.lower()][size] for size in SIZES)
 
-def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = False):
+def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = False, preferUnwrapped = True):
     """
     Attempts to fit the text into the specified area. Will shrink the text size
     if the current size fails until it is less than minSize. Returns a tuple of
     the automatically wrapped text, the font that worked, and the size of the
     font. Returns None if the function failed.
 
-    :param fast: Tells it whether to use a faster (but slightly less accurate)
-                 algorithm to determine the text size.
+    :param fast:            Tells it whether to use a faster (but slightly less
+                            accurate) algorithm to determine the text size.
+    :param preferUnwrapped: Tells the function to prefer a version that doesn't
+                            wrap the text midword.
     """
     if fontName.lower() not in FONTS:
         raise FontError(fontName)
@@ -101,11 +105,22 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = F
     for thread in threads:
         thread.join()
 
-    largest = (None, None, 0)
+    largest = (None, None, 0, False)
     for result in ret:
         if result:
             if result[2] > largest[2]:
                 largest = result
+
+    if preferUnwrapped:
+        # We need to get the largest unwrapped version.
+        unwrappedLargest = (None, None, 0, False)
+        for result in ret:
+            if result and not result[3]:
+                if result[2] > unwrappedLargest[2]:
+                    unwrappedLargest = result
+
+        largest = unwrappedLargest if unwrappedLargest[0] else largest
+
     return None if largest[0] is None else largest
 
     # for size in SIZES:
