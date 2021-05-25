@@ -1,3 +1,6 @@
+**v1.4.1**
+* Changed `getSize` and `setSizes` to not use case-sensitive font names.
+
 **v1.4.0**
 * Changed font size to be specific to a particular font. If no font size is specified, the defaults will be used.
 * Changed `setSizes` to `setSize` and changed its function.

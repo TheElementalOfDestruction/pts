@@ -141,23 +141,13 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = F
 
     return None if largest[0] is None else largest
 
-    # for size in SIZES:
-    #     if size < minSize:
-    #         return None
-    #     result = attemptFit(text, words, width, height, FONTS[fontName][size], size)
-    #     if result:
-    #         return result
-    #
-    # return None
-
-
 def getSize(fontName):
     """
     Returns the minium size, the maximum size, and the step for the specified font.
     """
-    if fontName not in FONTS:
+    if fontName.lower() not in FONTS:
         raise FontError(fontName)
-    font = FONTS[fontName]
+    font = FONTS[fontName.lower()]
     return {'min': font['minSize'], 'max': font['maxSize'], 'step': font['step']}
 
 def setSize(min, max, step, fontName = None):
@@ -171,13 +161,13 @@ def setSize(min, max, step, fontName = None):
     """
     sizes = tuple(reversed(range(min, max, int(abs(step)))))
     if fontName:
-        for size in FONTS[fontName]['sizes']:
-            if FONTS[fontName][size] in FAST_FONTS:
-                del FAST_FONTS[FONTS[fontName][size]]
+        for size in FONTS[fontName.lower()]['sizes']:
+            if FONTS[fontName.lower()][size] in FAST_FONTS:
+                del FAST_FONTS[FONTS[fontName.lower()][size]]
 
-        path = FONTS[fontName]['path']
-        encoding = FONTS[fontName]['encoding']
-        del FONTS[fontName]
+        path = FONTS[fontName.lower()]['path']
+        encoding = FONTS[fontName.lower()]['encoding']
+        del FONTS[fontName.lower()]
         loadTTF(fontName, path, encoding, min, max, step)
 
     else:
