@@ -23,6 +23,7 @@ SIZES = (
     15,
 )
 
+MAX_SIZE = 33
 MIN_SIZE = 15
 
 REF_IMG = PIL.Image.new('RGB', (1, 1), (0, 0, 0))
@@ -67,7 +68,7 @@ def loadTTF(name, path, encoding = '', fast = False):
         REGISTERED.append(name)
         FONTS[name.lower()] = {size: PIL.ImageFont.truetype(path, size, encoding = encoding) for size in SIZES}
         FONTS[name.lower()]['path'] = path
-        FONTS[name.lower()]['encoding'] = ''
+        FONTS[name.lower()]['encoding'] = encoding
         FONTS[name.lower()]['fast'] = fast
         if fast:
             createFastFont(FONTS[name.lower()][size] for size in SIZES)
@@ -142,6 +143,7 @@ def setSizes(min, max, step):
     global MIN_SIZE, SIZES
     # Change the SIZES constant.
     SIZES = tuple(reversed(range(min, max, int(abs(step)))))
+    MAX_SIZE = max
     MIN_SIZE = min
     # Reload all fonts to use the new text sizes.
     FAST_FONTS.clear()

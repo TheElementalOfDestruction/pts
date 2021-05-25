@@ -1,3 +1,6 @@
+**v1.3.1**
+* Added `MAX_SIZE` field to `PTS.core`. Avoid importing it directly to be able to detect changes to the font size.
+
 **v1.3.0**
 * Added new option `preferUnwrapped` to `fitText`. If this is enabled then the function will try to find a size of the font where it does not wrap the text mid-word. Will return the standard if it cannot find any sizes that do not do this.
 
