@@ -1,3 +1,9 @@
+**v1.4.0**
+* Changed font size to be specific to a particular font. If no font size is specified, the defaults will be used.
+* Changed `setSizes` to `setSize` and changed its function.
+* Added new function `getSize` that gives you size details of a font.
+* Fixed bug in 1.3.1 that caused `setSizes` to fail.
+
 **v1.3.1**
 * Added `MAX_SIZE` field to `PTS.core`. Avoid importing it directly to be able to detect changes to the font size.
 

@@ -25,6 +25,7 @@ SIZES = (
 
 MAX_SIZE = 33
 MIN_SIZE = 15
+STEP = 2
 
 REF_IMG = PIL.Image.new('RGB', (1, 1), (0, 0, 0))
 REF_DRAW = PIL.ImageDraw.ImageDraw(REF_IMG)
@@ -60,18 +61,32 @@ def attemptFit(text, words, width, height, font, size, fast):
 def listFonts():
     return tuple(x for x in REGISTERED)
 
-def loadTTF(name, path, encoding = '', fast = False):
+def loadTTF(name, path, encoding = '', fast = False, min = None, max = None, step = None):
     """
-    Loads the font from the specified path and stores it with the specified name.
+    Loads the font from the specified path and stores it with the specified
+    name.
     """
     if name.lower() not in FONTS:
+        max = max or MAX_SIZE
+        min = min or MIN_SIZE
+        step = step or STEP
+        if max == MAX_SIZE and min == MIN_SIZE and step == STEP:
+            sizes = SIZES
+        else:
+            sizes = tuple(reversed(range(min, max, int(abs(step)))))
+
         REGISTERED.append(name)
-        FONTS[name.lower()] = {size: PIL.ImageFont.truetype(path, size, encoding = encoding) for size in SIZES}
-        FONTS[name.lower()]['path'] = path
-        FONTS[name.lower()]['encoding'] = encoding
-        FONTS[name.lower()]['fast'] = fast
+        name = name.lower()
+        FONTS[name] = {size: PIL.ImageFont.truetype(path, size, encoding = encoding) for size in sizes}
+        FONTS[name]['path'] = path
+        FONTS[name]['encoding'] = encoding
+        FONTS[name]['fast'] = fast
+        FONTS[name]['sizes'] = sizes
+        FONTS[name]['minSize'] = min
+        FONTS[name]['maxSize'] = max
+        FONTS[name]['step'] = step
         if fast:
-            createFastFont(FONTS[name.lower()][size] for size in SIZES)
+            createFastFont(FONTS[name.lower()][size] for size in sizes)
 
 def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = False, preferUnwrapped = True):
     """
@@ -90,8 +105,10 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = F
 
     fontName = fontName.lower()
 
+    font = FONTS[fontName]
+
     if minSize is None:
-        minSize = MIN_SIZE
+        minSize = font['minSize']
 
     words = text.split(' ')
 
@@ -99,7 +116,7 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = F
     def attemptFitRet(text, words, width, height, font, size, fast, ret):
         ret.append(attemptFit(text, words, width, height, font, size, fast))
 
-    threads = tuple(threading.Thread(target = attemptFitRet, args = (text, words, width, height, FONTS[fontName][size], size, fast, ret), daemon = True) for size in SIZES if size >= minSize)
+    threads = tuple(threading.Thread(target = attemptFitRet, args = (text, words, width, height, font[size], size, fast, ret), daemon = True) for size in font['sizes'] if size >= minSize)
     for thread in threads:
         thread.start()
 
@@ -133,22 +150,39 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = F
     #
     # return None
 
-def setSizes(min, max, step):
+
+def getSize(fontName):
     """
-    Changes the size list used by the module.
-    :param min:  Minumum text size to use (inclusive).
-    :param max:  Maximim text size to use (exclusive).
-    :param step: The step between sizes.
+    Returns the minium size, the maximum size, and the step for the specified font.
     """
-    global MIN_SIZE, SIZES
-    # Change the SIZES constant.
-    SIZES = tuple(reversed(range(min, max, int(abs(step)))))
-    MAX_SIZE = max
-    MIN_SIZE = min
-    # Reload all fonts to use the new text sizes.
-    FAST_FONTS.clear()
-    for name in FONTS:
-        path = FONTS[name]['path']
-        encoding = FONTS[name]['encoding']
-        del FONTS[name]
-        loadTTF(name, path, encoding)
+    if fontName not in FONTS:
+        raise FontError(fontName)
+    font = FONTS[fontName]
+    return {'min': font['minSize'], 'max': font['maxSize'], 'step': font['step']}
+
+def setSize(min, max, step, fontName = None):
+    """
+    Changes the size used for a specific font. If none are specified, changes
+    the defaults and doesn't affect any existing fonts.
+    :param min:      Minumum text size to use (inclusive).
+    :param max:      Maximim text size to use (exclusive).
+    :param step:     The step between sizes.
+    :param fontName: The font to change.
+    """
+    sizes = tuple(reversed(range(min, max, int(abs(step)))))
+    if fontName:
+        for size in FONTS[fontName]['sizes']:
+            if FONTS[fontName][size] in FAST_FONTS:
+                del FAST_FONTS[FONTS[fontName][size]]
+
+        path = FONTS[fontName]['path']
+        encoding = FONTS[fontName]['encoding']
+        del FONTS[fontName]
+        loadTTF(fontName, path, encoding, min, max, step)
+
+    else:
+        global MAX_SIZE, MIN_SIZE, SIZES, STEP
+        MAX_SIZE = max
+        MIN_SIZE = min
+        SIZES = sizes
+        STEP = step
