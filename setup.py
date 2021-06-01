@@ -16,7 +16,7 @@ version_re = re.compile("__version__ = '(?P<version>[0-9\\.]*)'")
 with open('PTS/__init__.py', 'r') as stream:
     contents = stream.read()
 match = version_re.search(contents)
-__version__ = match.groupdict()['version']
+version = match.groupdict()['version']
 
 # read in the dependencies from the virtualenv requirements file
 dependencies = []
@@ -29,7 +29,7 @@ with open(filename, 'r') as stream:
 
 setup(
     name = main_module,
-    version = __version__,
+    version = version,
     description = "PIL Text Scaler",
     long_description = long_description,
     long_description_content_type = 'text/x-rst',
