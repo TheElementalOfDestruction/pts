@@ -29,7 +29,7 @@ with open(filename, 'r') as stream:
 
 setup(
     name = main_module,
-    version = version,
+    version = __version__,
     description = "PIL Text Scaler",
     long_description = long_description,
     long_description_content_type = 'text/x-rst',
