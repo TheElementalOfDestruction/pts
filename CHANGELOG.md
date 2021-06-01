@@ -1,3 +1,6 @@
+**v1.4.2**
+* Fixed error in setup if Pillow is not installed.
+
 **v1.4.1**
 * Changed `getSize` and `setSizes` to not use case-sensitive font names.
 
