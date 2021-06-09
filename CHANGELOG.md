@@ -1,3 +1,7 @@
+**v1.4.4**
+* Added some additional docstrings.
+* Fixed the date.
+
 **v1.4.3**
 * A specific font was giving me a weird error with Pillow so I went and added some code that should fix it.
 

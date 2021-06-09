@@ -1,6 +1,10 @@
 FAST_FONTS = {}
 
 def createFastFont(fonts):
+    """
+    Creates a fast version of the specified Font object. While slightly less
+    accurate, it is extremly fast.
+    """
     for font in fonts:
         if font not in FAST_FONTS:
             try:
@@ -12,6 +16,11 @@ def createFastFont(fonts):
                     raise
 
 def getSizeFast(text, font):
+    """
+    Faster version of the function of a Font object used for getting the size of
+    a string of text. If a fast version of the Font object does not exist, it
+    will automatically use the slow version of the function.
+    """
     if font in FAST_FONTS:
         ffont = FAST_FONTS[font]
         lines = tuple(getSizeLine(line, font, ffont) for line in text.split('\n'))
