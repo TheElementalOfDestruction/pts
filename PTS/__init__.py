@@ -28,7 +28,7 @@ https://github.com/TheElementalOfDestruction/pts
 
 __author__ = 'Destiny Peterson (The Elemental of Destruction)'
 __date__ = '2021-05-31'
-__version__ = '1.4.2'
+__version__ = '1.4.3'
 
 from PTS.core import listFonts, loadTTF, fitText, getSize, setSize
 from PTS.errors import FontError

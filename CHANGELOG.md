@@ -1,3 +1,6 @@
+**v1.4.3**
+* A specific font was giving me a weird error with Pillow so I went and added some code that should fix it.
+
 **v1.4.2**
 * Fixed error in setup if Pillow is not installed.
 

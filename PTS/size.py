@@ -3,7 +3,13 @@ FAST_FONTS = {}
 def createFastFont(fonts):
     for font in fonts:
         if font not in FAST_FONTS:
-            FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(256)}
+            try:
+                FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(256)}
+            except OSError as e:
+                if str(e) == 'unknown freetype error':
+                    FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(256)}
+                else:
+                    raise
 
 def getSizeFast(text, font):
     if font in FAST_FONTS:
