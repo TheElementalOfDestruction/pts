@@ -1,3 +1,5 @@
+|License: GPL v3| |PyPI3| |PyPI1|
+
 PIL Text Scaler
 ===============
 Module for automatically fitting a string of text inside of a specified area.
@@ -54,4 +56,13 @@ If you would like to change the minimum and maximum text sizes (as well as the d
 
 Fast Fonts
 ----------
-Fast fonts are a way to process the text data much faster. The downsides are that they are memory intensive, taking longer to load, and are slightly less accurate.
+Fast fonts are a way to process the text data much faster. The downsides are that they are memory intensive, taking longer to load, and are slightly less accurate. Fonts that have characters that overlap will be less accurate, sometimes by a large number of pixels.
+
+.. |License: GPL v3| image:: https://img.shields.io/badge/License-GPLv3-blue.svg
+   :target: LICENSE.txt
+
+.. |PyPI3| image:: https://img.shields.io/badge/pypi-0.29.0-blue.svg
+   :target: https://pypi.org/project/PTS/1.4.6/
+
+.. |PyPI1| image:: https://img.shields.io/badge/python-3.6+-brightgreen.svg
+   :target: https://www.python.org/downloads/release/python-367/

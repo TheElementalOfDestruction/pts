@@ -7,7 +7,7 @@ from setuptools import setup
 
 # A handful of variables that are used a couple of times.
 github_url = 'https://github.com/TheElementalOfDestruction/pts'
-main_module = 'pts'
+main_module = 'PTS'
 
 # Read in the description from README.
 with open('README.rst', 'rb') as stream:

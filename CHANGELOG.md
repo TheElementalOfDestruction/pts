@@ -1,3 +1,8 @@
+**v1.4.6**
+* Updated README for PyPI upload (finally).
+* Added `MANIFEST.in`.
+* Fixed module name in `setup.py`.
+
 **v1.4.5**
 * Fixed `setup.py`.
 * Added new entries to `.gitignore`.
