@@ -1,3 +1,7 @@
+**v1.4.5**
+* Fixed `setup.py`.
+* Added new entries to `.gitignore`.
+
 **v1.4.4**
 * Added some additional docstrings.
 * Fixed the date.

@@ -1,6 +1,8 @@
 import os
 import re
 
+import setuptools
+
 from setuptools import setup
 
 # A handful of variables that are used a couple of times.
