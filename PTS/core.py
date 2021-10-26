@@ -93,7 +93,8 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = F
     Attempts to fit the text into the specified area. Will shrink the text size
     if the current size fails until it is less than minSize. Returns a tuple of
     the automatically wrapped text, the font that worked, and the size of the
-    font. Returns None if the function failed.
+    font. Returns None if the function failed. Will strip leading and trailing
+    text.
 
     :param fast:            Tells it whether to use a faster (but slightly less
                             accurate) algorithm to determine the text size.
@@ -109,6 +110,8 @@ def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = F
 
     if minSize is None:
         minSize = font['minSize']
+
+    text = text.strip()
 
     words = text.split(' ')
 

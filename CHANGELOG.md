@@ -1,3 +1,6 @@
+**v1.4.7**
+* Attempted to fix an issue that would occur in text with leading and trailing spaces by having them automatically stripped from the text.
+
 **v1.4.6**
 * Updated README for PyPI upload (finally).
 * Added `MANIFEST.in`.

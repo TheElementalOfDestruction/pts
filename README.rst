@@ -61,8 +61,8 @@ Fast fonts are a way to process the text data much faster. The downsides are tha
 .. |License: GPL v3| image:: https://img.shields.io/badge/License-GPLv3-blue.svg
    :target: LICENSE.txt
 
-.. |PyPI3| image:: https://img.shields.io/badge/pypi-1.4.6-blue.svg
-   :target: https://pypi.org/project/PTS/1.4.6/
+.. |PyPI3| image:: https://img.shields.io/badge/pypi-1.4.7-blue.svg
+   :target: https://pypi.org/project/PTS/1.4.7/
 
 .. |PyPI1| image:: https://img.shields.io/badge/python-3.6+-brightgreen.svg
    :target: https://www.python.org/downloads/release/python-367/
