@@ -1,3 +1,6 @@
+import threading
+
+FAST_LOCK = threading.Lock()
 FAST_FONTS = {}
 
 def createFastFont(fonts):
@@ -8,10 +11,12 @@ def createFastFont(fonts):
     for font in fonts:
         if font not in FAST_FONTS:
             try:
-                FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(256)}
+                with FAST_LOCK:
+                    FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(256)}
             except OSError as e:
                 if str(e) == 'unknown freetype error':
-                    FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(256)}
+                    with FAST_LOCK:
+                        FAST_FONTS[font] = {chr(x): font.getsize_multiline(chr(x)) for x in range(256)}
                 else:
                     raise
 

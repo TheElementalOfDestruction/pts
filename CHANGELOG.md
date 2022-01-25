@@ -1,3 +1,6 @@
+**v1.4.8**
+* Added thread safety to the font loading. This allows you to add requests for loading a font from multiple threads. The dictionaries containing the font data are locked before modification or access and released immediately after to allow the operations to occur in parallel outside of the modification.
+
 **v1.4.7**
 * Attempted to fix an issue that would occur in text with leading and trailing spaces by having them automatically stripped from the text.
 

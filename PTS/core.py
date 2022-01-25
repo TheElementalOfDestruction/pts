@@ -6,10 +6,16 @@ import PIL.ImageDraw
 import PIL.ImageFont
 
 from PTS.errors import FontError
-from PTS.size import FAST_FONTS, createFastFont, getSizeFast, getSizeSlow
+from PTS.size import FAST_FONTS, FAST_LOCK, createFastFont, getSizeFast, getSizeSlow
 
+
+REG_LOCK = threading.Lock()
 REGISTERED = []
+
+FONT_LOCK = threading.Lock()
 FONTS = {}
+
+SIZE_LOCK = threading.Lock()
 SIZES = (
     33,
     31,
@@ -77,16 +83,19 @@ def loadTTF(name, path, encoding = '', fast = False, min = None, max = None, ste
 
         REGISTERED.append(name)
         name = name.lower()
-        FONTS[name] = {size: PIL.ImageFont.truetype(path, size, encoding = encoding) for size in sizes}
-        FONTS[name]['path'] = path
-        FONTS[name]['encoding'] = encoding
-        FONTS[name]['fast'] = fast
-        FONTS[name]['sizes'] = sizes
-        FONTS[name]['minSize'] = min
-        FONTS[name]['maxSize'] = max
-        FONTS[name]['step'] = step
+        newFont = {size: PIL.ImageFont.truetype(path, size, encoding = encoding) for size in sizes}
+        newFont['path'] = path
+        newFont['encoding'] = encoding
+        newFont['fast'] = fast
+        newFont['sizes'] = sizes
+        newFont['minSize'] = min
+        newFont['maxSize'] = max
+        newFont['step'] = step
+        # Wait for the font dictionary to be free then add the font.
+        with FONT_LOCK:
+            FONTS[name] = newFont
         if fast:
-            createFastFont(FONTS[name.lower()][size] for size in sizes)
+            createFastFont(newFont[size] for size in sizes)
 
 def fitText(text, width, height, fontName = 'consolas', minSize = None, fast = False, preferUnwrapped = True):
     """
@@ -166,16 +175,19 @@ def setSize(min, max, step, fontName = None):
     if fontName:
         for size in FONTS[fontName.lower()]['sizes']:
             if FONTS[fontName.lower()][size] in FAST_FONTS:
-                del FAST_FONTS[FONTS[fontName.lower()][size]]
+                with FAST_LOCK:
+                    del FAST_FONTS[FONTS[fontName.lower()][size]]
 
         path = FONTS[fontName.lower()]['path']
         encoding = FONTS[fontName.lower()]['encoding']
-        del FONTS[fontName.lower()]
+        with FONT_LOCK:
+            del FONTS[fontName.lower()]
         loadTTF(fontName, path, encoding, min, max, step)
 
     else:
         global MAX_SIZE, MIN_SIZE, SIZES, STEP
         MAX_SIZE = max
         MIN_SIZE = min
-        SIZES = sizes
+        with SIZE_LOCK:
+            SIZES = sizes
         STEP = step
